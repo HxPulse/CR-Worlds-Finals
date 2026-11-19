@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HX - CRL Worlds 2026</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" type="image/png" href="assets/favicon.png">
+  <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+</head>
+<body>
+  <header>
+    <h1>Clash Royale — Card Co-occurrence Network</h1>
+    <div class="subtitle">Cards are connected when they appear in the same submitted deck. Edge weight rewards wins more than losses.</div>
+  </header>
+
+  <main>
+    <section class="stats">
+      <div class="stat"><div class="value" id="deckCount">—</div><div class="label">Decks included</div></div>
+      <div class="stat"><div class="value" id="nodeCount">—</div><div class="label">Cards shown</div></div>
+      <div class="stat"><div class="value" id="edgeCount">—</div><div class="label">Card connections</div></div>
+      <div class="stat"><div class="value" id="weightTotal">—</div><div class="label">Total weighted pair score</div></div>
+    </section>
+
+    <section class="controls">
+      <div class="control">
+        <label for="outcome">Deck result</label>
+        <select id="outcome">
+          <option value="all">Wins + losses</option>
+          <option value="wins">Wins only</option>
+          <option value="losses">Losses only</option>
+        </select>
+      </div>
+
+      <label class="toggle"><input id="separateEvo" type="checkbox"> Separate Evos</label>
+      <label class="toggle"><input id="separateHero" type="checkbox"> Separate Heroes</label>
+
+      <div class="control">
+        <label for="minDecks">Minimum shared decks: <span id="minDecksValue">2</span></label>
+        <input id="minDecks" type="range" min="1" max="26" step="1" value="2">
+      </div>
+
+      <div class="control">
+        <label for="minScore">Minimum total weight: <span id="minScoreValue">5</span></label>
+        <input id="minScore" type="range" min="0" max="256" step=".5" value="5">
+      </div>
+
+      <div class="control">
+        <label for="search">Find a card</label>
+        <input id="search" type="search" placeholder="e.g. Knight">
+      </div>
+
+      <button id="reset">Reset view</button>
+    </section>
+
+    <section class="layout">
+      <div class="graph-wrap">
+        <div class="graph-head">
+          <span>Drag nodes · scroll to zoom · click a card for details</span>
+          <span id="graphStatus" class="status">Loading graph…</span>
+        </div>
+        <div id="network"></div>
+      </div>
+
+      <aside class="side">
+        <h2>How to read this graph</h2>
+        <p><strong>Node size:</strong> how often a card appeared.</p>
+        <p><strong>Edge thickness:</strong> how often two cards appeared together</p>
+        <p><strong>Weight:</strong> +1 if win | +0.5 if lose.</p>
+        <p><strong>Total Weight:</strong> sum of all the weights.</p>
+        <div class="legend">
+          <span><i class="dot dot-normal"></i>Normal</span>
+          <span><i class="dot dot-evo"></i>Evo</span>
+          <span><i class="dot dot-hero"></i>Hero</span>
+        </div>
+        <div class="hint">
+          <h2>Selected card</h2>
+          <div id="details"><p>Click a node to see its deck usage and strongest connections.</p></div>
+        </div>
+      </aside>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
