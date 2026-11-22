@@ -11,6 +11,7 @@ const $ = id => document.getElementById(id);
 /* ---------- State ---------- */
 let DECKS = [];
 let selectedNode = null;
+let selectedPlayers = new Set();
 const nodesDS = new vis.DataSet([]);
 const edgesDS = new vis.DataSet([]);
 
@@ -65,6 +66,29 @@ function getFilters() {
   };
 }
 
+function renderPlayerList() {
+  const players = [...new Set(DECKS.map(d => d.player))]
+    .filter(Boolean)
+    .sort((a, b) => a.localeCompare(b));
+
+  $("playerList").innerHTML = players.map(player => `
+    <label class="player-option">
+      <input type="checkbox" value="${escapeHtml(player)}"
+        ${selectedPlayers.has(player) ? "checked" : ""}>
+      ${escapeHtml(player)}
+    </label>
+  `).join("");
+
+  $("playerList").querySelectorAll("input").forEach(input => {
+    input.addEventListener("change", () => {
+      if (input.checked) selectedPlayers.add(input.value);
+      else selectedPlayers.delete(input.value);
+
+      buildGraph();
+    });
+  });
+}
+
 /* ---------- Graph construction ---------- */
 function aggregate(decks, separateEvo, separateHero) {
   const nodes = new Map();
@@ -102,8 +126,14 @@ function aggregate(decks, separateEvo, separateHero) {
 }
 
 function buildGraph() {
-  const { outcome, separateEvo, separateHero, minScore, minDecks } = getFilters();
-  const decks = DECKS.filter(d => outcome === "all" || (outcome === "wins" ? d.win === 1 : d.win === 0));
+  const { outcome, separateEvo, separateHero } = getFilters();
+  const hasPlayerFilter = selectedPlayers.size > 0;
+  const minScore = hasPlayerFilter ? 1 : Number($("minScore").value);
+  const minDecks = hasPlayerFilter ? 1 : Number($("minDecks").value);
+  const decks = DECKS.filter(d =>
+    (outcome === "all" || (outcome === "wins" ? d.win === 1 : d.win === 0)) &&
+    (selectedPlayers.size === 0 || selectedPlayers.has(d.player))
+  );
   const { nodes, edges } = aggregate(decks, separateEvo, separateHero);
 
   // Apply edge filters, then node filters, then drop edges whose nodes were removed.
@@ -293,6 +323,7 @@ async function init() {
     const res = await fetch(DATA_URL);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     DECKS = await res.json();
+    renderPlayerList();
     buildGraph();
   } catch (err) {
     $("graphStatus").textContent = "Failed to load deck data — run server.py";

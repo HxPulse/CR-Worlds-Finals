@@ -105,3 +105,32 @@ button:hover { border-color: var(--accent); }
   .layout { grid-template-columns: 1fr; }
   #network { height: 62vh; min-height: 28rem; }
 }
+
+.player-filter {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: .8rem;
+  padding: 1rem;
+  margin-top: .85rem;
+}
+
+#playerList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .8rem 1.5rem;
+}
+
+.player-option {
+  display: flex;
+  align-items: center;
+  gap: .4rem;
+  color: var(--text);
+  font-size: .95rem;
+  cursor: pointer;
+}
+
+.player-option input {
+  width: 1.15rem;
+  height: 1.15rem;
+  cursor: pointer;
+}
