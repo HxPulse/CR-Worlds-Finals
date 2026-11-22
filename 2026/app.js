@@ -81,8 +81,21 @@ function renderPlayerList() {
 
   $("playerList").querySelectorAll("input").forEach(input => {
     input.addEventListener("change", () => {
+      const wasEmpty = selectedPlayers.size === 0;
+
       if (input.checked) selectedPlayers.add(input.value);
       else selectedPlayers.delete(input.value);
+
+      const isEmpty = selectedPlayers.size === 0;
+
+      // Reset thresholds when entering or leaving player-filter mode
+      if (wasEmpty && !isEmpty) {
+        $("minDecks").value = 1;
+        $("minScore").value = 1;
+      } else if (!wasEmpty && isEmpty) {
+        $("minDecks").value = 2;
+        $("minScore").value = 5;
+      }
 
       buildGraph();
     });
@@ -128,8 +141,8 @@ function aggregate(decks, separateEvo, separateHero) {
 function buildGraph() {
   const { outcome, separateEvo, separateHero } = getFilters();
   const hasPlayerFilter = selectedPlayers.size > 0;
-  const minScore = hasPlayerFilter ? 1 : Number($("minScore").value);
-  const minDecks = hasPlayerFilter ? 1 : Number($("minDecks").value);
+  const minScore = Number($("minScore").value);
+  const minDecks = Number($("minDecks").value);
   const decks = DECKS.filter(d =>
     (outcome === "all" || (outcome === "wins" ? d.win === 1 : d.win === 0)) &&
     (selectedPlayers.size === 0 || selectedPlayers.has(d.player))
