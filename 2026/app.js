@@ -1,7 +1,7 @@
 "use strict";
 
 /* ---------- Config ---------- */
-const DATA_URL = "/api/decks";
+const DATA_URL = "./decks.json";
 const WIN_WEIGHT = 1;
 const LOSS_WEIGHT = 0.5;
 const COLORS = { Normal: "#75A7FF", Evo: "#9B70F5", Hero: "#FFBD69" };
@@ -25,7 +25,7 @@ const network = new vis.Network($("network"), { nodes: nodesDS, edges: edgesDS }
       stabilization: { enabled: true, iterations: 300, fit: true, updateInterval: 25}
     },
     nodes: { shape: "image", scaling: { min: 20, max: 55 }, 
-      borderWidth: 2, brokenImage: "assets/placeholder.png" },
+      borderWidth: 2, brokenImage: "./assets/placeholder.png" },
     edges: { smooth: { type: "dynamic" }, selectionWidth: 0, hoverWidth: 1,
       color: {
         color: "rgba(148, 167, 202, .34)",
@@ -164,7 +164,7 @@ function buildGraph() {
       label: n.label,
       shape: "image",
       image: getCardImage(n.id),
-      brokenImage: "assets/placeholder.png",
+      brokenImage: "./assets/placeholder.png",
       value: 10 + (score / maxDegree) * 30,
       color: {
         background: isSelected ? "#ff4040" : color,
@@ -310,7 +310,7 @@ network.on("deselectNode", function () {
 });
 
 function getCardImage(name) {
-  const path = `/assets/${name.replace(/\s+/g, "")}.png`;
+  const path = `./assets/${name.replace(/\s+/g, "")}.png`;
   const img = new Image();
   img.src = path;
 
