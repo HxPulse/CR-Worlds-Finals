@@ -140,7 +140,6 @@ function aggregate(decks, separateEvo, separateHero) {
 
 function buildGraph() {
   const { outcome, separateEvo, separateHero } = getFilters();
-  const hasPlayerFilter = selectedPlayers.size > 0;
   const minScore = Number($("minScore").value);
   const minDecks = Number($("minDecks").value);
   const decks = DECKS.filter(d =>
